@@ -9,116 +9,110 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'myApp',
-      home: const MyWidget(),
+      home: CounterScreen(),
     );
   }
 }
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class CounterScreen extends StatefulWidget {
+  const CounterScreen({super.key});
+
+  @override
+  State<CounterScreen> createState() => _CounterScreenState();
+}
+
+class _CounterScreenState extends State<CounterScreen> {
+  int _counter = 0;
+  double _boxSize = 120;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        title: const Text("Animated Counter"),
         centerTitle: true,
-        elevation: 0,
-        title: const Text(
-          'myApp',
-          
-          style: TextStyle(
-            color: Colors.black,
-          
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            
-          ),
-        ),
+        backgroundColor: Colors.deepPurple,
       ),
-      body: Center(
-        child: Card(
-          elevation: 8,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+      body: Stack(
+        children: [
+          // 🔹 Background image
+          SizedBox.expand(
+            child: Image.asset(
+              'lib/assets/logo.png', 
+              fit: BoxFit.cover,
+            ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
+
+          // 🔹 Center animated box
+          Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Welcome to my Flutter learning',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20),
-                ),
-
-                const SizedBox(height: 16),
-
-                // ✅ RESPONSIVE IMAGE
-                SizedBox(
-                  height: 180,
-                  child: Image.asset(
-                    'lib/assets/logo.png',
-                    fit: BoxFit.contain,
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                  width: _boxSize,
+                  height: _boxSize,
+                  decoration: BoxDecoration(
+                    color: Colors.pink[200], // light pink color
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '$_counter',
+                    style: const TextStyle(
+                      fontSize: 40,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-
-                const SizedBox(height: 16),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                   
-                    ElevatedButton(
-                      onPressed: () {},
-                      style:ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-
-                         padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                      
-                      ),
-
-                      ),
-                      child: const Text("Like",style: 
-                      TextStyle(
-                        color: Colors.white,)),
-                    ),
-                    
-                    ElevatedButton(
-                      onPressed: () {},
-                      style:ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-
-                         padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                      
-                      ),
-
-                      ),
-                      child: const Text("suscribe",style: 
-                      TextStyle(
-                        color: Colors.red,)),
-                    ),
-
-                  ],
+                const SizedBox(height: 20),
+                const Text(
+                  "Animated Box",
+                  style: TextStyle(fontSize: 18),
                 ),
               ],
             ),
           ),
-        ),
+
+          // 🔹 Bottom buttons (line end)
+          Positioned(
+            bottom: 30,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton(
+                  heroTag: "minus",
+                  backgroundColor: Colors.red,
+                  onPressed: () {
+                    setState(() {
+                      _counter--;
+                      _boxSize = (_boxSize - 10).clamp(80, 200);
+                    });
+                  },
+                  child: const Icon(Icons.remove),
+                ),
+                const SizedBox(width: 40),
+                FloatingActionButton(
+                  heroTag: "plus",
+                  backgroundColor: Colors.green,
+                  onPressed: () {
+                    setState(() {
+                      _counter++;
+                      _boxSize = (_boxSize + 10).clamp(80, 200);
+                    });
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
